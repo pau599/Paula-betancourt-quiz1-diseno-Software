@@ -15,7 +15,7 @@ public class Application {
 
         try {
             // Crear una nueva motocicleta
-            Motocicleta moto = new Motocicleta(0, "Yamaha", "R1", 2023, 18000.00);
+        	Motocicleta moto = new Motocicleta(0, "Yamaha", "R1", 1000, "Negro", 18000.00);
             repo.guardar(moto);
             System.out.println("Motocicleta guardada con éxito.");
 

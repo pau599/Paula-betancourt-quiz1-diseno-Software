@@ -35,7 +35,7 @@ public class MotocicletaService {
             Motocicleta m = motoExistente.get();
             m.setMarca(moto.getMarca());
             m.setModelo(moto.getModelo());
-            m.setAnio(moto.getAnio());
+            m.setCilindraje(moto.getCilindraje());
             m.setPrecio(moto.getPrecio());
             repository.guardar(m);
             return true;
