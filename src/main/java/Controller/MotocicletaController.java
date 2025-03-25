@@ -1,6 +1,6 @@
 package Controller;
 
-import java.net.http.HttpResponse.ResponseInfo;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,30 +8,32 @@ import Service.MotocicletaService;
 import model.Motocicleta;
 
 public class MotocicletaController {
-	
-	private static final String ResponseEntity = null;
-	private MotocicletaService service;
 
-    public List<Motocicleta> listar() {
+    private MotocicletaService service = new MotocicletaService();
+
+    public List<Motocicleta> listar() throws SQLException {
         return service.obtenerTodas();
     }
 
-    public ResponseInfo<Motocicleta> obtenerPorId( Long id) {
+    public String obtenerPorId(int id) throws SQLException {
         Optional<Motocicleta> moto = service.obtenerPorId(id);
-        return moto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return moto.map(m -> "Motocicleta encontrada: " + m.getMarca() + " " + m.getModelo())
+                   .orElse("Motocicleta no encontrada");
     }
 
-    public ResponseEntity<Motocicleta> agregar( Motocicleta moto) {
-        return ResponseEntity.ok(service.guardar(moto));
+    public String agregar(Motocicleta moto) throws SQLException {
+        service.guardar(moto);
+        return "Motocicleta agregada exitosamente";
     }
 
-    public ResponseEntity<Motocicleta> actualizar( Long id, Motocicleta moto) {
-        Motocicleta updatedMoto = service.actualizar(id, moto);
-        return updatedMoto != null ? ResponseEntity.ok(updatedMoto) : ResponseEntity.notFound().build();
+    public String actualizar(int id, Motocicleta moto) throws SQLException {
+        boolean actualizado = service.actualizar(id, moto);
+        return actualizado ? "Motocicleta actualizada" : "Motocicleta no encontrada";
+    }
+    
+    public String eliminar(int id) throws SQLException {
+        boolean eliminado = service.eliminar(id); // Se asigna el resultado a una variable
+        return eliminado ? "Motocicleta eliminada con éxito." : "Error: No se encontró la motocicleta.";
     }
 
-    public ResponseEntity<Void> eliminar(Long id) {
-        service.eliminar(id);
-        return ResponseEntity.noContent().build();
-    }
 }

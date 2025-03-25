@@ -1,23 +1,24 @@
 package Service;
 
 import java.sql.SQLException;
-
-import DTO.UserDTO;
-import Exception.InvalidUserDataException;
 import Repository.UserRepository;
-import util.UserValidator;
+import model.User;
 
 public class UserService {
-	 private UserRepository userRepository;
 
-	    @Autowired
-	    private BCryptPasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
 
-	    public String login(String email, String password) {
-	        Optional<User> user = userRepository.findByEmail(email);
-	        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-	            return JwtUtil.generateToken(email);
-	        }
-	        return null;
-	    }
+    public UserService() {
+        this.userRepository = new UserRepository();
+    }
+
+    public boolean validateUser(String email, String password) {
+        try {
+            User user = userRepository.findByEmail(email);
+            return user != null && user.getPasswordHash().equals(password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
