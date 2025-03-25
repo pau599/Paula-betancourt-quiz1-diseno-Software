@@ -8,17 +8,16 @@ import Repository.UserRepository;
 import util.UserValidator;
 
 public class UserService {
-	private UserRepository userRepository = new UserRepository();
-	
-	public UserDTO getUserById(int id) throws SQLException{
-		return userRepository.findById(id);
-	}
-	
-	public void createUser(String name, String email) throws SQLException, InvalidUserDataException{
-		if (!UserValidator.validateName(name) || !UserValidator.validateEmail (email)) {
-			throw new InvalidUserDataException ("Invalid user data");
-		}
-		UserDTO user = new UserDTO (0, name, email);
-		userRepository.save(user);
-	}
+	 private UserRepository userRepository;
+
+	    @Autowired
+	    private BCryptPasswordEncoder passwordEncoder;
+
+	    public String login(String email, String password) {
+	        Optional<User> user = userRepository.findByEmail(email);
+	        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
+	            return JwtUtil.generateToken(email);
+	        }
+	        return null;
+	    }
 }
